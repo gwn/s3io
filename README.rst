@@ -32,6 +32,8 @@ There are three ways to provide access to s3:
 
 Reading file using existing S3 connection::
 
+        import s3io
+
         s3 = boto.connect_s3()
         with s3io.open('s3://<bucket>/<key>', s3_connection=s3) as s3_file:
             contents = s3_file.read()
