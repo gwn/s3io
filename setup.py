@@ -35,6 +35,7 @@ setup(
     ],
 
     keywords='amazon aws s3 file',
+    py_modules=['s3io'],
     install_requires=[
         'boto',
     ],
