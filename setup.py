@@ -9,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='s3io',
-    version='0.1.0',
+    version='0.1.1',
 
     description='Access resources on Amazon S3 as a File Object.',
     long_description=long_description,

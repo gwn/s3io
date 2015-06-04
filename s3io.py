@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 import re
-import tempfile
+from tempfile import NamedTemporaryFile
 
 import boto
 
@@ -67,26 +67,22 @@ def open(s3_url, mode='r', s3_connection=None, **kwargs):
     except boto.exception.S3ResponseError:
         raise BucketNotFoundError('Bucket "%s" was not found.' % bucket_name)
 
-    if 'w' in mode.lower():
-        s3_key = bucket.new_key(key_name)
+    f = NamedTemporaryFile()
+    try:
+        if 'w' in mode.lower():
+            s3_key = bucket.new_key(key_name)
 
-        f = tempfile.NamedTemporaryFile()
-        try:
             yield f
             f.seek(0)
             s3_key.set_contents_from_file(f)
-        finally:
-            f.close()
-    else:
-        s3_key = bucket.get_key(key_name)
+        else:
+            s3_key = bucket.get_key(key_name)
 
-        if not s3_key:
-            raise KeyNotFoundError('Key "%s" was not found.' % s3_url)
+            if not s3_key:
+                raise KeyNotFoundError('Key "%s" was not found.' % s3_url)
 
-        f = tempfile.TemporaryFile()
-        try:
             s3_key.get_file(f)
             f.seek(0)
             yield f
-        finally:
-            f.close()
+    finally:
+        f.close()
